@@ -1,5 +1,4 @@
 import "./App.css";
-//import saveAs from "file-saver";
 
 import { Helmet } from "react-helmet";
 
@@ -11,21 +10,17 @@ import {
   Button,
   createTheme,
   CssBaseline,
-  IconButton,
   Stack,
   TextField,
   ThemeProvider,
   Toolbar,
   Typography,
 } from "@mui/material";
-import UploadFile from "@mui/icons-material/UploadFile";
-//import { render } from "react-dom";
 
 const App = () => {
   const [decidedDishes, setDecidedDishes] = useState([]);
   const [undecidedDishes, setUndecidedDishes] = useState([]);
   const [menu, setMenu] = useState([]);
-  const [removedDate, setRemovedDate] = useState([]);
 
   const inputRef = useRef(null);
   const childCalendarRef = useRef(null);
@@ -36,12 +31,21 @@ const App = () => {
   const addDishes = () => {
     let dish = document.getElementById("dishInput").value;
     if (dish.length !== 0) {
-      setUndecidedDishes([...undecidedDishes, dish]);
+      if (!undecidedDishes.includes(dish) && !decidedDishes.includes(dish)) {
+        setUndecidedDishes((prevUndecidedDishes) =>
+          [...prevUndecidedDishes, dish].sort((a, b) => (a > b ? 1 : -1))
+        );
+      } else {
+        window.confirm("その料理は追加されています");
+      }
     }
     document.getElementById("dishInput").value = "";
-    //changeMenu(dish);
   };
 
+  /**
+   * 献立アップロード確認
+   * @returns 返り値なし
+   */
   const fileUpload = () => {
     if (menu.length !== 0) {
       if (
@@ -157,19 +161,16 @@ const App = () => {
   /**
    * 料理から献立を作成
    */
-  // TODO: ドラッグしたときメニューに更新する
   const decideMenu = () => {
     const eventDates = childCalendarRef.current.getEventDates();
     console.log(eventDates);
 
     const schedule = [];
     const tmpArr = [...undecidedDishes];
-    // const rDate = [...removedDate];
 
     const today = new Date();
     let len = tmpArr.length;
     while (len !== 0) {
-      //console.log(len, today);
       const year = today.getFullYear();
       const month = ("0" + (today.getMonth() + 1)).slice(-2);
       const day = ("0" + today.getDate()).slice(-2);
@@ -218,79 +219,56 @@ const App = () => {
   };
 
   /**
-   * 料理を追加
+   * 料理を削除
    */
-  // const changeMenu = useCallback(
-  //   (dish) => {
-  //     if (typeof dish === "string") {
-  //       setUndecidedDishes([...undecidedDishes, dish]);
-  //       //console.log(undecidedDishes);
-  //     } else {
-  //       setUndecidedDishes(dish);
-  //       //console.log(undecidedDishes);
-  //     }
-  //   },
-  //   [undecidedDishes]
-  // );
+  const deleteMenu = useCallback((title) => {
+    setMenu((prevMenu) => prevMenu.filter((obj) => obj.title !== title));
+    // setMenu((oldMenu) => {
+    //   console.log(oldMenu);
+    //   return oldMenu;
+    // });
 
-  const deleteMenu = useCallback(
-    (mIndex, title) => {
-      console.log(mIndex, title);
+    setDecidedDishes((prevDecidedDishes) =>
+      prevDecidedDishes
+        .filter((dish) => dish !== title)
+        .sort((a, b) => (a > b ? 1 : -1))
+    );
+    // setDecidedDishes((dish) => {
+    //   console.log(dish);
+    //   return dish;
+    // });
 
-      const newMenu = [];
-      menu.forEach((e, i) => {
-        if (i !== mIndex) {
-          newMenu.push(e);
-        } else {
-          const newRemovedDate = e.date;
-          setRemovedDate([...removedDate, newRemovedDate]);
-        }
-      });
-      setMenu(newMenu);
+    setUndecidedDishes((prevUndecidedDishes) =>
+      [...prevUndecidedDishes, title].sort((a, b) => (a > b ? 1 : -1))
+    );
+    // setUndecidedDishes((dish) => {
+    //   console.log(dish);
+    //   return dish;
+    // });
+  }, []);
 
-      const newDecidedDishes = [];
-      const dIndex = decidedDishes.indexOf(title);
-      decidedDishes.forEach((e, i) => {
-        if (i !== dIndex) {
-          newDecidedDishes.push(e);
-        }
-      });
-      setDecidedDishes(newDecidedDishes);
+  /**
+   * 献立を更新
+   */
+  const deleteAndAddMenu = useCallback((oldEventTitle, newEventDate) => {
+    setMenu((prevMenu) =>
+      prevMenu
+        .map((obj) =>
+          obj.title === oldEventTitle
+            ? { title: obj.title, date: newEventDate }
+            : obj
+        )
+        .sort((a, b) => (a.date > b.date ? 1 : -1))
+    );
 
-      setUndecidedDishes([...undecidedDishes, title]);
-    },
-    [menu, undecidedDishes, decidedDishes, removedDate]
-  );
+    // 更新した値をすぐ表示するにはこのように書く
+    // setMenu((oldMenu) => {
+    //   console.log(oldMenu);
+    //   return oldMenu;
+    // });
+  }, []);
 
-  // const deleteAndAddMenu = useCallback(
-  //   (oldEventIndex, oldEventTitle, newEventDate, newEventTitle) => {
-  //     //console.log(mIndex, title);
-
-  //     const newMenu = [];
-  //     menu.forEach((e, i) => {
-  //       if (i !== oldEventIndex) {
-  //         newMenu.push(e);
-  //       } else {
-  //         const newRemovedDate = e.date;
-  //         setRemovedDate([...removedDate, newRemovedDate]);
-  //       }
-  //     });
-  //     setMenu(newMenu);
-
-  //     // const newDecidedDishes = [];
-  //     // const dIndex = decidedDishes.indexOf(title);
-  //     // decidedDishes.forEach((e, i) => {
-  //     //   if (i !== dIndex) {
-  //     //     newDecidedDishes.push(e);
-  //     //   }
-  //     // });
-  //     // setDecidedDishes(newDecidedDishes);
-
-  //     // setUndecidedDishes([...undecidedDishes, title]);
-  //   },
-  //   [menu, undecidedDishes, decidedDishes, removedDate]
-  // );
-
+  // デザインテーマ
   const apptheme = createTheme({
     typography: {
       fontFamily: ['"Zen Maru Gothic"'].join(","),
@@ -348,7 +326,12 @@ const App = () => {
           </Stack>
         </div>
       </div>
-      <Calendar ref={childCalendarRef} menu={menu} deleteMenu={deleteMenu} />
+      <Calendar
+        ref={childCalendarRef}
+        menu={menu}
+        deleteMenu={deleteMenu}
+        deleteAndAddMenu={deleteAndAddMenu}
+      />
     </ThemeProvider>
   );
 };

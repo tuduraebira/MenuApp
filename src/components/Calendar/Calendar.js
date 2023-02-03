@@ -32,28 +32,28 @@ const CalendarBase = ({ menu, deleteMenu, deleteAndAddMenu }, ref) => {
    */
   const handleEventClick = (clickInfo) => {
     if (window.confirm(`'${clickInfo.event.title}'を削除しますか？`)) {
-      // 削除される料理のindexを取得
+      // 削除される料理を取得
       // TODO 同じ料理名だった場合の処理
-      const index = menu.findIndex((e) => e.title === clickInfo.event.title);
-      const title = clickInfo.event.title;
-      if (index !== -1) {
-        deleteMenu(index, title);
-      }
+      // ⇒ 同じ料理名を元から入れないようにした
+      deleteMenu(clickInfo.event.title);
 
       clickInfo.event.remove();
     }
   };
 
+  /**
+   * イベントがドロップされたときの処理関数
+   *
+   * @param {*} eventDropInfo イベントオブジェクト
+   */
   const handleEventDrop = (eventDropInfo) => {
     const oldEvent = eventDropInfo.oldEvent;
     const newEvent = eventDropInfo.event;
 
-    const oldEventIndex = menu.findIndex((e) => e.title === oldEvent.title);
-    const oldEventTitle = oldEvent.title;
+    const eventTitle = oldEvent.title;
     const newEventDate = newEvent.startStr;
-    const newEventTitle = newEvent.title;
 
-    deleteAndAddMenu(oldEventIndex, oldEventTitle, newEventDate, newEventTitle);
+    deleteAndAddMenu(eventTitle, newEventDate);
   };
 
   return (
