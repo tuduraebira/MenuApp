@@ -163,59 +163,45 @@ const App = () => {
    */
   const decideMenu = () => {
     const eventDates = childCalendarRef.current.getEventDates();
-    console.log(eventDates);
 
     const schedule = [];
-    const tmpArr = [...undecidedDishes];
+    const dishes = [...undecidedDishes];
 
     const today = new Date();
-    let len = tmpArr.length;
+    let len = dishes.length;
     while (len !== 0) {
       const year = today.getFullYear();
       const month = ("0" + (today.getMonth() + 1)).slice(-2);
       const day = ("0" + today.getDate()).slice(-2);
 
-      if (`${year}-${month}-${day}` === eventDates[0]) {
+      if (eventDates.includes(`${year}-${month}-${day}`)) {
         eventDates.shift();
       } else {
         const rndNum = Math.floor(Math.random() * len);
         schedule.push({
-          title: tmpArr[rndNum],
+          title: dishes[rndNum],
           date: `${year}-${month}-${day}`,
         });
-        tmpArr[rndNum] = tmpArr[len - 1];
+        dishes[rndNum] = dishes[len - 1];
         len--;
       }
       today.setDate(today.getDate() + 1);
     }
 
-    // for (let i = 0, len = tmpArr.length; i < tmpArr.length; i++, len--) {
-    //   const year = today.getFullYear();
-    //   const month = ("0" + (today.getMonth() + 1)).slice(-2);
-    //   const day = ("0" + today.getDate()).slice(-2);
-
-    //   const rndNum = Math.floor(Math.random() * len);
-    //   if (rDate.length !== 0) {
-    //     const date = rDate.pop();
-    //     //console.log(date);
-    //     schedule.push({
-    //       title: tmpArr[rndNum],
-    //       date: date,
-    //     });
-    //   } else {
-    //     schedule.push({
-    //       title: tmpArr[rndNum],
-    //       date: `${year}-${month}-${day}`,
-    //     });
-    //   }
-    //   tmpArr[rndNum] = tmpArr[len - 1];
-    //   today.setDate(today.getDate() + 1);
-    // }
-    console.log(schedule);
-
-    setMenu([...menu, ...schedule]);
-    setDecidedDishes([...decidedDishes, ...undecidedDishes]);
+    setMenu((prevMenu) =>
+      [...prevMenu, ...schedule].sort((a, b) => (a.date > b.date ? 1 : -1))
+    );
+    setDecidedDishes((prevDecidedDishes) =>
+      [...prevDecidedDishes, ...undecidedDishes].sort((a, b) =>
+        a > b ? 1 : -1
+      )
+    );
     setUndecidedDishes([]);
+
+    setMenu((oldMenu) => {
+      console.log(oldMenu);
+      return oldMenu;
+    });
   };
 
   /**
