@@ -57,7 +57,7 @@ const CalendarBase = ({ menu, deleteMenu, deleteAndAddMenu }, ref) => {
   };
 
   return (
-    <Box sx={{ m: 3 }}>
+    <Box sx={{ m: 5 }}>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"

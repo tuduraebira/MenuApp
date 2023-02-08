@@ -14,40 +14,36 @@ const DishList = ({ decided, undecided }) => {
         elevation={3}
         sx={{
           width: "50%",
-          m: 2,
+          m: 3,
         }}
       >
         <Typography align="center" variant="h6" sx={{ m: 1 }}>
           登録済
         </Typography>
         <Container fixed sx={{ height: "50%" }}>
-          <Typography sx={{ overflowY: "scroll" }}>
-            <ul>
-              {decided.map((value) => (
-                <li key={value}>{value}</li>
-              ))}
-            </ul>
-          </Typography>
+          <ul>
+            {decided.map((value) => (
+              <li key={value}>{value}</li>
+            ))}
+          </ul>
         </Container>
       </Paper>
       <Paper
         elevation={3}
         sx={{
           width: "50%",
-          m: 2,
+          m: 3,
         }}
       >
         <Typography align="center" variant="h6" sx={{ m: 1 }}>
           未登録
         </Typography>
         <Container fixed sx={{ height: "50%" }}>
-          <Typography sx={{ overflowY: "scroll" }}>
-            <ul>
-              {undecided.map((value) => (
-                <li key={value}>{value}</li>
-              ))}
-            </ul>
-          </Typography>
+          <ul>
+            {undecided.map((value) => (
+              <li key={value}>{value}</li>
+            ))}
+          </ul>
         </Container>
       </Paper>
     </Box>
