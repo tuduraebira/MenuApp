@@ -32,9 +32,6 @@ const CalendarBase = ({ menu, deleteMenu, deleteAndAddMenu }, ref) => {
    */
   const handleEventClick = (clickInfo) => {
     if (window.confirm(`'${clickInfo.event.title}'を削除しますか？`)) {
-      // 削除される料理を取得
-      // TODO 同じ料理名だった場合の処理
-      // ⇒ 同じ料理名を元から入れないようにした
       deleteMenu(clickInfo.event.title);
 
       clickInfo.event.remove();

@@ -36,7 +36,7 @@ const App = () => {
           [...prevUndecidedDishes, dish].sort((a, b) => (a > b ? 1 : -1))
         );
       } else {
-        window.confirm("その料理は追加されています");
+        window.alert("その料理は追加されています");
       }
     }
     document.getElementById("dishInput").value = "";
@@ -85,10 +85,8 @@ const App = () => {
     const logData = await getFileData(file);
 
     const logJSON = JSON.parse(logData);
-    //console.log(logJSON);
     const dDtmp = [];
     for (const menu of logJSON.menu) {
-      //console.log(menu.title);
       dDtmp.push(menu.title);
     }
     setDecidedDishes(dDtmp);
@@ -148,7 +146,6 @@ const App = () => {
       type: "application/json;charset=utf-8",
     });
 
-    //saveAs(blob, "menu.json");
     const anchor = document.createElement("a");
     anchor.href = URL.createObjectURL(blob);
     anchor.download = "menu.json";
@@ -197,11 +194,6 @@ const App = () => {
       )
     );
     setUndecidedDishes([]);
-
-    setMenu((oldMenu) => {
-      console.log(oldMenu);
-      return oldMenu;
-    });
   };
 
   /**
@@ -209,28 +201,16 @@ const App = () => {
    */
   const deleteMenu = useCallback((title) => {
     setMenu((prevMenu) => prevMenu.filter((obj) => obj.title !== title));
-    // setMenu((oldMenu) => {
-    //   console.log(oldMenu);
-    //   return oldMenu;
-    // });
 
     setDecidedDishes((prevDecidedDishes) =>
       prevDecidedDishes
         .filter((dish) => dish !== title)
         .sort((a, b) => (a > b ? 1 : -1))
     );
-    // setDecidedDishes((dish) => {
-    //   console.log(dish);
-    //   return dish;
-    // });
 
     setUndecidedDishes((prevUndecidedDishes) =>
       [...prevUndecidedDishes, title].sort((a, b) => (a > b ? 1 : -1))
     );
-    // setUndecidedDishes((dish) => {
-    //   console.log(dish);
-    //   return dish;
-    // });
   }, []);
 
   /**
@@ -246,12 +226,6 @@ const App = () => {
         )
         .sort((a, b) => (a.date > b.date ? 1 : -1))
     );
-
-    // 更新した値をすぐ表示するにはこのように書く
-    // setMenu((oldMenu) => {
-    //   console.log(oldMenu);
-    //   return oldMenu;
-    // });
   }, []);
 
   // デザインテーマ
